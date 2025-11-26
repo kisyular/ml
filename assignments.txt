@@ -1,0 +1,116 @@
+# Assignment 01
+Take any Dataset from sources such as UCI Machine Learning Repository, and identify 3 business problems that can be solved using the chosen data set; provide the set of attributes you will choose to answer the business question as predictors and which attribute will be your dependent variable and present some of the preliminary exploration of the data as well. Present your thought process for the selections made.
+
+Hint: In the dataset first identify variables that can be your DV for the business insights. For example suppose you have a data set which has home process and demographics of the area. Thank you can look at multiple business questions such as:
+
+Business Question: What factors influence the cost of a home in the area?
+
+Think about your IVs and DVs very thoroughly. What DV captures your business problem clearly. What IVs should you consider, which IVs should you not consider. Focus on those decisions and present your though process clearly and in a concise manner in a word document.
+
+Here is the rubric for A1:
+
+Dataset (minimum 800/1000 rows and 8-12 useful columns) - 10 points
+Each business problem statement -10 points
+IV selection (3 or more) and appropriate criteria- 10 points
+DV selection and appropriate criteria- 10 points
+Total 30 points each, so for 3 problems= 90 points
+EAD can be done in addition to get ahead for A2.
+
+GRADE 96/100
+
+
+
+# Assignment 02
+Assignment 02: For the dataset you chose in assignment 01, identify two business problems, and apply two different methods or algorithms that are applicable. These methods need to be consistent with the DV of choice and you can present some of the preliminary exploration of the data as well for justifying your choice of IV and DV. Provide code separately to the main report. You are allowed to look up code online but please cite any sources that you use. Choose which method performs the best? Expand on your findings and provide your thoughts. Submit a word document for the report and any additional code in their native format (ipynb, .py or .r)
+
+## Grading Breakdown
+Identification of Business Problems (20 points)
+Evaluates how clearly and accurately the business problems are stated and explained.
+
+Methods Used (40 points — 10 per model)
+Checks whether each model is applied correctly, described well, and aligned with the assigned task.
+
+Consistency with DV (10 points — 2.5 per model)
+Assesses whether the dependent variable chosen for each model is appropriate and consistent.
+
+Which Method Performs Best (20 points — 10 per business problem)
+Evaluates how well you compare model performance and justify which method works best for each problem.
+
+Expansion on Findings (20 points — 10 per business problem)
+Checks how well you interpret, explain, and extend your results beyond basic output.
+
+Code Provided (20 points)
+Assesses whether code is included, correct, and complete.
+
+Sources Cited (5 points)
+Evaluates proper citation of references used in the report.
+
+Report Structure and Clarity (5 points)
+Checks organization, readability, and overall clarity of the report.
+
+Total: 150 points
+
+GRADE 150/150
+FEEDBACK:
+This is outstanding work — extremely detailed, beautifully structured, and full of genuine analytical insight. You not only built two very different types of models, but you also explained the business value of each in a way that feels practical and grounded. Your churn modeling pipeline, use of temporal splits, and SHAP analysis (I love SHAP and it is one of the most tactical tools I think you can use) were all excellent touches that show real technical depth.
+Your product-recommendation section was just as strong, with clear value statements and well-interpreted metrics. I honestly wouldn’t change anything here — this is exactly the kind of polished, professional write-up that deserves full credit! NICE work!
+
+
+# Assignment 03
+For the dataset chosen previously, devise three different approaches, one supervised, one unsupervised and one mixed. For the supervised method, you can choose any that you had already done as part of assignment 02. Provide a background for what business problem will your approach solve, what are the steps involved and how will you go about conducting the overall data mining process. Present all your findings and overall thoughts.
+
+## Grading Rubric
+
+Identification of Business Problem (15 points)
+Excellent (13–15 points): Clearly identifies a relevant business problem and explains its significance and potential impact.
+Good (10–12 points): Identifies a business problem with a reasonable explanation of its importance.
+Needs Improvement (7–9 points): Business problem is identified but explanation is vague or lacks depth.
+Poor (0–6 points): Business problem is poorly defined or missing.
+
+Supervised Method Description (15 points)
+Excellent (13–15 points): Provides a clear and thorough description of the supervised method, including its purpose, relevance, and steps involved.
+Good (10–12 points): Describes the supervised method with adequate details, but some steps lack clarity or depth.
+Needs Improvement (7–9 points): Supervised method is described but is missing significant details or lacks clarity.
+Poor (0–6 points): Supervised method is poorly described or irrelevant.
+
+Unsupervised Method Description (15 points)
+Excellent (13–15 points): Provides a clear and thorough description of the unsupervised method, including its purpose, relevance, and steps involved.
+Good (10–12 points): Describes the unsupervised method with adequate details, but some steps lack clarity or depth.
+Needs Improvement (7–9 points): Unsupervised method is described but is missing significant details or lacks clarity.
+Poor (0–6 points): Unsupervised method is poorly described or irrelevant.
+
+Mixed Method Description (15 points)
+Excellent (13–15 points): Provides a clear and thorough description of the mixed method. The model should mix the unsupervised cluster finding and substitute the features used for clustering in the supervised method to get to the mixed method.
+Good (10–12 points): Describes the mixed method with adequate details, but some steps lack clarity or depth.
+Needs Improvement (7–9 points): Mixed method is described but is missing significant details or lacks clarity.
+Poor (0–6 points): Mixed method is poorly described or irrelevant.
+
+Steps in Data Mining Process (15 points)
+Excellent (13–15 points): Clearly outlines and justifies all steps involved in the data mining process for each method, with logical flow.
+Good (10–12 points): Outlines the steps in the data mining process, but some steps are unclear or lack justification.
+Needs Improvement (7–9 points): Steps in the data mining process are partially described or lack logical flow.
+Poor (0–6 points): Steps in the data mining process are poorly described or missing.
+
+Presentation of Findings (20 points)
+Excellent (18–20 points): Findings for each approach are presented clearly, supported by strong explanation or evidence.
+Good (14–17 points): Findings are presented, but some are unclear or lack full explanation.
+Needs Improvement (10–13 points): Findings are presented, but significant gaps or unclear parts remain.
+Poor (0–9 points): Findings are poorly presented or missing.
+
+Overall Thoughts and Reflections (10 points)
+Excellent (9–10 points): Thoughtful and insightful reflections on the strengths, weaknesses, and implications of each approach.
+Good (7–8 points): Adequate reflections on the approaches, but lacking depth or critical insights.
+Needs Improvement (5–6 points): Reflections are shallow, with limited critical analysis.
+Poor (0–4 points): Reflections are missing or overly superficial.
+
+Code Provided (20 points)
+Excellent (18–20 points): Code is complete, functional, well organized, and thoroughly documented for all methods.
+Good (14–17 points): Code is functional and documented, but some elements are unclear or incomplete.
+Needs Improvement (10–13 points): Code is partially functional or lacks adequate documentation.
+Poor (0–9 points): Code is missing, non functional, or poorly documented.
+
+Report Structure and Clarity (15 points)
+Excellent (13–15 points): Report is highly organized, with clear sections, logical flow, and no grammatical errors.
+Good (10–12 points): Report is mostly organized, with minor issues in clarity or grammar.
+Needs Improvement (7–9 points): Report lacks organization or contains multiple grammatical errors.
+Poor (0–6 points): Report is disorganized or difficult to follow.
