@@ -32,7 +32,7 @@ Build an end-to-end machine learning project that predicts and explains **custom
 
 ## Requirements & Context
 
-### Assignment 01 Requirements (Dr. Chakraborty)
+### Assignment 01 Requirements - DONE
 
 **Dataset Criteria:**
 - ≥ 800-1000 rows
@@ -46,6 +46,12 @@ Build an end-to-end machine learning project that predicts and explains **custom
   - ≥ 3 Independent Variables with justification (10 pts)
   - Clear Dependent Variable capturing business goal (10 pts)
   - Preliminary exploration of data (EDA) (10 pts)
+
+### Assignment 02 Requirements (Chris, TA)
+Assignment 02: For the dataset you chose in assignment 01, identify two business problems, and apply two different methods or algorithms that are applicable.
+These methods need to be consistent with the DV of choice and you can present some of the preliminary exploration of the data as well for justifying your choice of IV and DV. 
+Provide code separately to the main report. Choose which method performs the best? Expand on your findings and provide your thoughts. 
+Submit a word document for the report and any additional code in their native format (ipynb, .py or .r)
 
 ### Real-World Guidance (Chris, TA)
 
@@ -102,66 +108,66 @@ UCI Machine Learning Repository
 
 ## Business Problems
 
-### Problem 1: Revenue Drivers
+### Problem 1: Customer Churn Prediction
 
 **Business Question:**
-What factors drive total transaction revenue?
+Which customers are at risk of not returning in the next 90 days?
 
 **Business Context:**
-Management wants to understand which aspects of an order (product, customer, timing) most strongly affect order value for pricing optimization and sales forecasting.
+Marketing wants to identify at-risk customers to prioritize retention campaigns and prevent churn.
 
 **Hypothesis:**
-Revenue increases with higher quantities, specific product categories, during high-demand months, and with repeat customers.
+Customers with declining recency, low frequency, and specific purchase patterns are more likely to churn.
 
 | Component             | Details                                                                      |
 |-----------------------|------------------------------------------------------------------------------|
-| **Dependent Variable**| `Revenue = Quantity × UnitPrice`                                             |
-| **Independent Variables** | Quantity, UnitPrice, Month, DayOfWeek, Country, CustomerType (new vs returning) |
-| **Model Type**        | Regression (Linear → Random Forest)                                          |
-| **Business Value**    | Reveals revenue levers, improves forecasting and marketing timing            |
-| **Expected Performance** | R² ≈ 0.85-0.90                                                            |
+| **Dependent Variable**| `will_return_90days` (1 if customer returns in next 90 days, 0 otherwise)    |
+| **Independent Variables** | Recency, Frequency, Monetary (RFM), AvgBasketValue, DaysSinceFirstPurchase, Returns |
+| **Model Type**        | Classification (Logistic Regression, Random Forest, **Gradient Boosting**)   |
+| **Business Value**    | Identifies at-risk customers for targeted retention strategies               |
+| **Performance Achieved** | **Recall: 0.688**, **F1 Score: 0.671** (Gradient Boosting with Class Weights)|
 
 ---
 
-### Problem 2: Customer Repurchase Prediction
+### Problem 2: Product Recommendation System
 
 **Business Question:**
-Which factors increase the likelihood of customer repurchase?
+Which products are frequently bought together?
 
 **Business Context:**
-Marketing wants to predict which customers will buy again to prioritize retention campaigns and loyalty programs.
+Increase average order value (AOV) by recommending complementary products at checkout (cross-selling).
 
 **Hypothesis:**
-Customers with shorter recency periods, higher average basket values, and more frequent transactions are more likely to repurchase.
+Certain products (e.g., teacups and saucers) exhibit strong co-occurrence patterns in transactions.
 
 | Component             | Details                                                                      |
 |-----------------------|------------------------------------------------------------------------------|
-| **Dependent Variable**| `IsRepeatCustomer` (1 if NumTransactions > 1, else 0)                        |
-| **Independent Variables** | RecencyDays, AvgBasketValue, TotalQuantity, TotalRevenue, Country, MonthOfLastPurchase |
-| **Model Type**        | Classification (Logistic Regression → Random Forest)                         |
-| **Business Value**    | Identifies high-potential customers for retention programs                   |
-| **Expected Performance** | Accuracy ≈ 75-85%, AUC ≈ 0.85-0.90                                        |
+| **Method**            | **Association Rule Mining (Apriori Algorithm)**                              |
+| **Metrics**           | Support, Confidence, Lift                                                    |
+| **Key Findings**      | Identified strong bundles (Lift > 20) for "Regency" tea sets and "Alarm Clocks" |
+| **Business Value**    | Enables data-driven cross-selling and product bundling strategies            |
+| **Implementation**    | `mlxtend` library for frequent itemsets and association rules                |
 
 ---
 
-### Problem 3: Product Profitability Prioritization
+### Problem 3: Anomaly Detection in Transactions
 
 **Business Question:**
-Which products should be prioritized to maximize profitability?
+Which transactions are fraudulent or suspicious?
 
 **Business Context:**
-Merchandising team needs to know which products offer the best combination of sales volume, unit price, and customer reach for marketing and inventory decisions.
+Identify fraudulent or suspicious transactions to reduce losses and improve security.
 
 **Hypothesis:**
-High profitability is associated with products that balance unit price and volume, purchased by many unique customers.
+Anomalous transactions deviate significantly from normal patterns in terms of value, quantity, or product combinations.
 
 | Component             | Details                                                                      |
 |-----------------------|------------------------------------------------------------------------------|
-| **Dependent Variable**| `ProductProfitability` (average revenue per product by StockCode)            |
-| **Independent Variables** | AvgUnitPrice, TotalQuantitySold, UniqueCustomers, AvgBasketSize          |
-| **Model Type**        | Regression/Ranking (Random Forest Regressor)                                 |
-| **Business Value**    | Highlights high-margin products for marketing and inventory prioritization   |
-| **Expected Performance** | R² ≈ 0.75-0.85                                                            |
+| **Method**            | **Unsupervised Anomaly Detection**                                           |
+| **Techniques**        | Statistical Outliers (Z-score), Isolation Forest                             |
+| **Key Metrics**       | Anomaly Score, Reconstruction Error                                          |
+| **Business Value**    | Reduce fraud-related losses, improve transaction security, flag suspicious accounts |
+| **Implementation**    | `scikit-learn` (Isolation Forest), `scipy.stats` (Z-score)                   |
 
 ---
 
@@ -227,129 +233,126 @@ df['Hour'] = df['InvoiceDate'].dt.hour
 
 ### Phase 3: Exploratory Data Analysis (EDA)
 
-**Using plotnine (ggplot2-style) for all visualizations**
+**Using seaborn for all visualizations**
 
 #### 3.1 Revenue Distribution
 ```python
-from plotnine import *
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-(
-    ggplot(df, aes(x='Revenue')) +
-    geom_histogram(bins=50, fill='skyblue', color='black', alpha=0.7) +
-    labs(title='Distribution of Revenue per Transaction',
-         x='Revenue (£)', y='Frequency') +
-    theme_minimal()
-)
+plt.figure(figsize=(16, 6))
+sns.histplot(df['revenue'], bins=50, kde=True, color='skyblue')
+plt.title('Revenue Distribution')
+plt.xlabel('Revenue (£)')
+plt.ylabel('Frequency')
+plt.show()
 ```
 **Insight:** Revenue is right-skewed—most orders are small, few large invoices dominate.
 
 #### 3.2 Monthly Revenue Trend
 ```python
-monthly_rev = df.groupby('Month', as_index=False)['Revenue'].sum()
+monthly_rev = df.groupby('month', as_index=False)['revenue'].sum()
 
-(
-    ggplot(monthly_rev, aes(x='Month', y='Revenue')) +
-    geom_line(color='steelblue', size=1) +
-    geom_point(color='darkblue', size=2) +
-    labs(title='Monthly Total Revenue', x='Month', y='Total Revenue (£)') +
-    theme_minimal()
-)
+plt.figure(figsize=(18, 6))
+sns.barplot(data=monthly_rev, x='month', y='revenue', color='steelblue')
+plt.xticks(rotation=45, ha='right')
+plt.title('Monthly Total Revenue')
+plt.xlabel('Month')
+plt.ylabel('Total Revenue (£)')
+plt.show()
 ```
 **Insight:** Strong seasonality—revenues peak in November-December (holiday period).
 
 #### 3.3 Top 10 Countries by Revenue
 ```python
 country_rev = (
-    df.groupby('Country', as_index=False)['Revenue']
+    df.groupby('country', as_index=False)['revenue']
       .sum()
-      .sort_values('Revenue', ascending=False)
+      .sort_values('revenue', ascending=False)
       .head(10)
 )
 
-(
-    ggplot(country_rev, aes(x=reorder('Country', 'Revenue'), y='Revenue')) +
-    geom_col(fill='seagreen', alpha=0.8) +
-    coord_flip() +
-    labs(title='Top 10 Countries by Total Revenue',
-         x='Country', y='Revenue (£)') +
-    theme_minimal()
-)
+plt.figure(figsize=(18, 6))
+sns.barplot(data=country_rev, x='revenue', y='country', color='seagreen', alpha=0.8)
+plt.title('Top 10 Countries by Total Revenue')
+plt.xlabel('Revenue (£)')
+plt.ylabel('Country')
+plt.tight_layout()
+plt.show()
 ```
 **Insight:** UK contributes ~85% of revenue; Germany and France are key secondary markets.
 
 #### 3.4 Customer Purchase Frequency
 ```python
-(
-    ggplot(customer_summary, aes(x='NumTransactions')) +
-    geom_histogram(bins=30, fill='salmon', color='black', alpha=0.7) +
-    labs(title='Distribution of Transactions per Customer',
-         x='Number of Transactions', y='Customer Count') +
-    theme_minimal()
-)
+plt.figure(figsize=(16, 6))
+sns.histplot(customer_summary['num_transactions'], bins=30, kde=True, color='salmon')
+plt.title('Distribution of Transactions per Customer')
+plt.xlabel('Number of Transactions')
+plt.ylabel('Customer Count')
+plt.show()
 ```
 **Insight:** ~60% of customers purchase only once—clear signal for retention strategy.
 
 #### 3.5 Recency-Frequency Heatmap (RFM)
 ```python
-customer_summary['RecencyGroup'] = pd.cut(
-    customer_summary['RecencyDays'],
+customer_summary['recency_group'] = pd.cut(
+    customer_summary['recency_days'],
     bins=[0,30,60,90,120,9999],
     labels=['<30','31-60','61-90','91-120','120+']
 )
-customer_summary['FreqGroup'] = pd.cut(
-    customer_summary['NumTransactions'],
+customer_summary['freq_group'] = pd.cut(
+    customer_summary['num_transactions'],
     bins=[1,2,3,5,10,100],
     labels=['1','2','3-5','6-10','10+']
 )
 
 rfm = customer_summary.groupby(
-    ['RecencyGroup','FreqGroup'], as_index=False
-).agg(mean_revenue=('TotalRevenue','mean'))
+    ['recency_group','freq_group'], as_index=False
+).agg(mean_revenue=('total_revenue','mean'))
 
-(
-    ggplot(rfm, aes(x='FreqGroup', y='RecencyGroup', fill='mean_revenue')) +
-    geom_tile(color='white') +
-    scale_fill_gradient(low='lightyellow', high='darkgreen') +
-    labs(title='Customer Behavior Heatmap: Recency vs Frequency',
-         x='Frequency Group', y='Recency Group', fill='Avg Revenue (£)') +
-    theme_minimal()
-)
+rfm_pivot = rfm.pivot(index='recency_group', columns='freq_group', values='mean_revenue')
+
+plt.figure(figsize=(12, 8))
+sns.heatmap(rfm_pivot, annot=True, fmt='.0f', cmap='YlGn', cbar_kws={'label': 'Avg Revenue (£)'})
+plt.title('Customer Behavior Heatmap: Recency vs Frequency')
+plt.xlabel('Frequency Group')
+plt.ylabel('Recency Group')
+plt.show()
 ```
 **Insight:** Frequent, recent customers are most profitable—strong ML predictors.
 
 #### 3.6 Pareto Curve (80/20 Rule)
 ```python
-pareto = customer_summary.sort_values('TotalRevenue', ascending=False).reset_index(drop=True)
-pareto['CumRevenue'] = pareto['TotalRevenue'].cumsum()
-pareto['RevenueShare'] = pareto['CumRevenue'] / pareto['TotalRevenue'].sum()
-pareto['CustomerShare'] = (pareto.index + 1) / len(pareto)
+pareto = customer_summary.sort_values('total_revenue', ascending=False).reset_index(drop=True)
+pareto['cum_revenue'] = pareto['total_revenue'].cumsum()
+pareto['revenue_share'] = pareto['cum_revenue'] / pareto['total_revenue'].sum()
+pareto['customer_share'] = (pareto.index + 1) / len(pareto)
 
-(
-    ggplot(pareto, aes(x='CustomerShare', y='RevenueShare')) +
-    geom_line(color='steelblue', size=1.2) +
-    geom_hline(yintercept=0.8, linetype='dashed', color='red') +
-    geom_vline(xintercept=0.2, linetype='dashed', color='red') +
-    labs(title='Pareto Curve: Customer Revenue Concentration',
-         x='Cumulative Share of Customers',
-         y='Cumulative Share of Revenue') +
-    theme_minimal()
-)
+plt.figure(figsize=(12, 8))
+plt.plot(pareto['customer_share'], pareto['revenue_share'], color='steelblue', linewidth=2)
+plt.axhline(y=0.8, color='red', linestyle='--', label='80% Revenue')
+plt.axvline(x=0.2, color='red', linestyle='--', label='20% Customers')
+plt.title('Pareto Curve: Customer Revenue Concentration')
+plt.xlabel('Cumulative Share of Customers')
+plt.ylabel('Cumulative Share of Revenue')
+plt.legend()
+plt.grid(alpha=0.3)
+plt.show()
 ```
 **Insight:** ~20% of customers generate ~80% of revenue.
 
 #### 3.7 Hourly Revenue Pattern
 ```python
-hourly_rev = df.groupby('Hour', as_index=False)['Revenue'].sum()
+hourly_rev = df.groupby('hour', as_index=False)['revenue'].sum()
 
-(
-    ggplot(hourly_rev, aes(x='Hour', y='Revenue')) +
-    geom_line(color='darkred', size=1) +
-    geom_point(color='firebrick', size=2) +
-    labs(title='Average Hourly Revenue Pattern',
-         x='Hour of Day', y='Total Revenue (£)') +
-    scale_x_continuous(breaks=range(0,24,2)) +
-    theme_minimal()
-)
+plt.figure(figsize=(16, 6))
+sns.lineplot(data=hourly_rev, x='hour', y='revenue', color='darkred', marker='o', linewidth=2)
+plt.title('Average Hourly Revenue Pattern')
+plt.xlabel('Hour of Day')
+plt.ylabel('Total Revenue (£)')
+plt.xticks(range(0, 24, 2))
+plt.grid(alpha=0.3)
+plt.show()
 ```
 **Insight:** Peak sales 10 AM–3 PM (UK time)—matches office shopping hours.
 
@@ -407,167 +410,76 @@ df['CustomerType'] = df['CustomerID'].map(
 
 ### Phase 5: Machine Learning Modeling
 
-#### 5.1 Model 1 - Revenue Prediction (Regression)
+#### 5.1 Model 1 - Customer Churn Prediction (Classification)
 
 ```python
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.linear_model import LinearRegression
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-import numpy as np
+from xgboost import XGBClassifier
+from imblearn.pipeline import Pipeline as ImbPipeline
+from imblearn.over_sampling import SMOTE
+from sklearn.metrics import classification_report, roc_auc_score
 
-# Prepare data
-X = df[['Quantity','UnitPrice','Month','DayOfWeek','Country','CustomerType']]
-y = df['Revenue']
-
-num_cols = ['Quantity','UnitPrice','Month']
-cat_cols = ['DayOfWeek','Country','CustomerType']
-
-preprocessor = ColumnTransformer([
-    ('num', StandardScaler(), num_cols),
-    ('cat', OneHotEncoder(handle_unknown='ignore'), cat_cols)
+# Gradient Boosting with SMOTE
+gb_model = ImbPipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('smote', SMOTE(random_state=42)),
+    ('classifier', XGBClassifier(
+        n_estimators=300,
+        learning_rate=0.05,
+        max_depth=5,
+        scale_pos_weight=class_weight_ratio,
+        random_state=42
+    ))
 ])
 
-# Linear Regression
-lr_model = Pipeline([
-    ('prep', preprocessor),
-    ('lr', LinearRegression())
-])
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-lr_model.fit(X_train, y_train)
-lr_pred = lr_model.predict(X_test)
-
-print("Linear Regression:")
-print(f"  MAE: {mean_absolute_error(y_test, lr_pred):.2f}")
-print(f"  RMSE: {np.sqrt(mean_squared_error(y_test, lr_pred)):.2f}")
-print(f"  R²: {r2_score(y_test, lr_pred):.4f}")
-
-# Random Forest
-rf_model = Pipeline([
-    ('prep', preprocessor),
-    ('rf', RandomForestRegressor(n_estimators=100, random_state=42))
-])
-
-rf_model.fit(X_train, y_train)
-rf_pred = rf_model.predict(X_test)
-
-print("\nRandom Forest:")
-print(f"  MAE: {mean_absolute_error(y_test, rf_pred):.2f}")
-print(f"  RMSE: {np.sqrt(mean_squared_error(y_test, rf_pred)):.2f}")
-print(f"  R²: {r2_score(y_test, rf_pred):.4f}")
+gb_model.fit(X_train, y_train)
+# Achieved Recall: 0.688, F1: 0.671
 ```
 
-**Expected Results:**
-- Linear Regression R² ≈ 0.82-0.85
-- Random Forest R² ≈ 0.88-0.92
-
-#### 5.2 Model 2 - Customer Repurchase (Classification)
+#### 5.2 Model 2 - Product Recommendation (Association Rules)
 
 ```python
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, roc_auc_score, confusion_matrix
+from mlxtend.frequent_patterns import apriori, association_rules
 
-# Prepare data
-X = customer_summary[['RecencyDays','AvgBasketValue','TotalQuantity','TotalRevenue','Country']]
-y = customer_summary['IsRepeatCustomer']
+# Create basket matrix (InvoiceNo x StockCode)
+basket = (df.groupby(['InvoiceNo', 'StockCode'])['Quantity']
+          .sum().unstack().reset_index().fillna(0)
+          .set_index('InvoiceNo'))
 
-num_cols = ['RecencyDays','AvgBasketValue','TotalQuantity','TotalRevenue']
-cat_cols = ['Country']
+# Encode (1 if purchased, 0 otherwise)
+basket_encoded = basket.applymap(lambda x: 1 if x > 0 else 0)
 
-preprocessor = ColumnTransformer([
-    ('num', StandardScaler(), num_cols),
-    ('cat', OneHotEncoder(handle_unknown='ignore'), cat_cols)
-])
+# Find frequent itemsets
+frequent_itemsets = apriori(basket_encoded, min_support=0.01, use_colnames=True)
 
-# Logistic Regression
-log_model = Pipeline([
-    ('prep', preprocessor),
-    ('clf', LogisticRegression(max_iter=1000, random_state=42))
-])
+# Generate rules
+rules = association_rules(frequent_itemsets, metric="lift", min_threshold=1.0)
+rules = rules.sort_values('lift', ascending=False)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
-log_model.fit(X_train, y_train)
-log_pred = log_model.predict(X_test)
-log_pred_proba = log_model.predict_proba(X_test)[:,1]
-
-print("Logistic Regression:")
-print(classification_report(y_test, log_pred))
-print(f"ROC AUC: {roc_auc_score(y_test, log_pred_proba):.4f}")
-
-# Random Forest Classifier
-rf_clf_model = Pipeline([
-    ('prep', preprocessor),
-    ('clf', RandomForestClassifier(n_estimators=100, random_state=42))
-])
-
-rf_clf_model.fit(X_train, y_train)
-rf_clf_pred = rf_clf_model.predict(X_test)
-rf_clf_pred_proba = rf_clf_model.predict_proba(X_test)[:,1]
-
-print("\nRandom Forest Classifier:")
-print(classification_report(y_test, rf_clf_pred))
-print(f"ROC AUC: {roc_auc_score(y_test, rf_clf_pred_proba):.4f}")
+print(rules[['antecedents', 'consequents', 'lift', 'confidence']].head())
 ```
 
-**Expected Results:**
-- Logistic Regression Accuracy ≈ 75-80%, AUC ≈ 0.85
-- Random Forest Accuracy ≈ 80-85%, AUC ≈ 0.89
-
-#### 5.3 Model 3 - Product Profitability (Regression)
+#### 5.3 Model 3 - Anomaly Detection (Unsupervised)
 
 ```python
-# Prepare data
-X = product_summary[['AvgUnitPrice','TotalQuantitySold','UniqueCustomers','AvgBasketSize']]
-y = product_summary['ProductProfitability']
+from sklearn.ensemble import IsolationForest
+from sklearn.preprocessing import StandardScaler
 
-# Random Forest Regressor
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+# Select features for Isolation Forest
+iso_features = ['total_value', 'total_items', 'unique_products', 'avg_item_price']
+X_iso = transaction_features[iso_features].copy()
 
+# Standardize features
 scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+X_iso_scaled = scaler.fit_transform(X_iso)
 
-rf_prod_model = RandomForestRegressor(n_estimators=100, random_state=42)
-rf_prod_model.fit(X_train_scaled, y_train)
-prod_pred = rf_prod_model.predict(X_test_scaled)
+# Train Isolation Forest
+iso_forest = IsolationForest(contamination=0.05, random_state=42)
+transaction_features['anomaly_iso_forest'] = iso_forest.fit_predict(X_iso_scaled)
 
-print("Product Profitability Model:")
-print(f"  MAE: {mean_absolute_error(y_test, prod_pred):.2f}")
-print(f"  R²: {r2_score(y_test, prod_pred):.4f}")
-
-# Feature importance
-feature_importance = pd.DataFrame({
-    'Feature': X.columns,
-    'Importance': rf_prod_model.feature_importances_
-}).sort_values('Importance', ascending=False)
-
-print("\nFeature Importance:")
-print(feature_importance)
+# Anomaly if -1
+n_anomalies = (transaction_features['anomaly_iso_forest'] == -1).sum()
+print(f"Anomalies detected: {n_anomalies}")
 ```
-
-**Expected Results:**
-- R² ≈ 0.75-0.85
-- Top features: AvgUnitPrice, UniqueCustomers
-
-#### 5.4 Feature Importance & Explainability (SHAP)
-
-```python
-import shap
-
-# For Random Forest Revenue model
-explainer = shap.TreeExplainer(rf_model.named_steps['rf'])
-X_test_transformed = rf_model.named_steps['prep'].transform(X_test)
-shap_values = explainer.shap_values(X_test_transformed)
-
-shap.summary_plot(shap_values, X_test_transformed, feature_names=X.columns)
-```
-
-**Insight:** Recency and Frequency are top predictors for retention; Quantity drives revenue.
 
 ---
 
@@ -606,29 +518,11 @@ monthly_rev_fig = px.line(
 st.plotly_chart(monthly_rev_fig, use_container_width=True)
 ```
 
-#### Model Performance Visualization
-```python
-st.subheader("Revenue Prediction: Actual vs Predicted")
-results_df = pd.DataFrame({
-    'Actual': y_test,
-    'Predicted': rf_pred
-})
-
-fig_scatter = px.scatter(
-    results_df, x='Actual', y='Predicted',
-    title='Revenue Model Performance',
-    labels={'Actual': 'Actual Revenue (£)', 'Predicted': 'Predicted Revenue (£)'}
-)
-fig_scatter.add_shape(type="line", x0=0, y0=0, x1=results_df['Actual'].max(),
-                      y1=results_df['Actual'].max(), line=dict(color="red", dash="dash"))
-st.plotly_chart(fig_scatter, use_container_width=True)
-```
-
-#### Customer Retention Distribution
+#### Model Performance Visualization (Churn)
 ```python
 st.subheader("Customer Retention Probability Distribution")
 retention_df = pd.DataFrame({
-    'Probability': rf_clf_pred_proba,
+    'Probability': gb_model.predict_proba(X_test)[:, 1],
     'Actual': y_test
 })
 
@@ -641,20 +535,18 @@ fig_ret = px.histogram(
 st.plotly_chart(fig_ret, use_container_width=True)
 ```
 
-#### Top Products Ranking
+#### Product Recommendations
 ```python
-st.subheader("Top Predicted Profitable Products")
-product_summary['PredictedProfitability'] = rf_prod_model.predict(
-    scaler.transform(product_summary[['AvgUnitPrice','TotalQuantitySold','UniqueCustomers','AvgBasketSize']])
-)
+st.subheader("Top Product Associations")
+st.dataframe(rules[['antecedents', 'consequents', 'lift', 'confidence']].head(10))
+```
 
-top_products = product_summary.nlargest(15, 'PredictedProfitability')
-
-fig_prod = px.bar(
-    top_products, x='PredictedProfitability', y='StockCode',
-    orientation='h', title='Top 15 Products by Predicted Profitability'
-)
-st.plotly_chart(fig_prod, use_container_width=True)
+#### Anomaly Detection
+```python
+st.subheader("Detected Anomalies")
+anomalies_df = transaction_features[transaction_features['anomaly_iso_forest'] == -1]
+st.write(f"Total Anomalies: {len(anomalies_df)}")
+st.dataframe(anomalies_df[['Invoice', 'total_value', 'total_items', 'anomaly_score']].head(10))
 ```
 
 #### Geographic Revenue Map
@@ -682,11 +574,11 @@ st.plotly_chart(fig_geo, use_container_width=True)
 
 ### Summary of Model Performance
 
-| Model                     | Metric    | Value      | Key Takeaway                      |
+| Model/Method              | Metric    | Value      | Key Takeaway                      |
 |---------------------------|-----------|------------|-----------------------------------|
-| Revenue Regression        | R²        | **0.88**   | Volume and timing drive revenue   |
-| Repurchase Classification | AUC       | **0.89**   | Recency and spend predict loyalty |
-| Product Profitability     | R²        | **0.82**   | Balanced price × reach = profit   |
+| Churn Prediction          | Recall    | **0.688**  | Recency and frequency are key     |
+| Product Recommendation    | Lift      | **> 20**   | Strong bundles exist              |
+| Anomaly Detection         | Anomalies | **~1-5%**  | Fraud/Suspicious activity detected|
 
 ### Business Insights by Area
 
@@ -712,16 +604,16 @@ st.plotly_chart(fig_geo, use_container_width=True)
 - Frequent buyer loyalty tier for high AvgBasketValue customers
 - Churn-monitoring dashboard for declining activity alerts
 
-#### 3. Product Profitability and Merchandising
+#### 3. Anomaly Detection and Fraud Prevention
 **Findings:**
-- Profitability driven by unit price + unique customers, not just volume
-- High-value, mid-volume products perform best
-- 20% of products generate ~80% of revenue (Pareto principle)
+- ~1-5% of transactions flagged as anomalous
+- Statistical outliers often indicate bulk purchases or potential errors
+- Isolation Forest effective at finding multi-dimensional anomalies
 
 **Recommendations:**
-- Prioritize restocking mid-range, high-margin items
-- Evaluate discontinuing low-margin, low-reach SKUs
-- Renegotiate supplier contracts for premium products
+- Implement real-time alerts for high anomaly scores
+- Manual review for transactions > 3 standard deviations from mean
+- Dynamic transaction limits based on customer history
 
 ### Cross-Domain Observations
 
@@ -864,12 +756,14 @@ retail-ml-project/
 ```
 pandas>=1.5.0
 numpy>=1.23.0
-plotnine>=0.10.0
+seaborn>=0.12.0
+matplotlib>=3.6.0
 scikit-learn>=1.2.0
 streamlit>=1.20.0
 plotly>=5.13.0
 shap>=0.41.0
 openpyxl>=3.0.0
+pyjanitor>=0.24.0
 ```
 
 ---
