@@ -199,6 +199,20 @@ Mixed: What types of customers exist, and how does each type behave?
 
 These approaches demonstrate how different data mining techniques reveal different sides of the same business. Together, they give a complete understanding of the customers, their behavior, and their purchasing patterns.
 
+Try to add the elsow
+https://www.kaggle.com/code/foxxii/rfmt-model-for-segmentation-kmeans
+plt.figure(figsize=(10,5))
+ax=plt.axes()
+ax.set_facecolor('#cd5c5c')
+Elbow_M=KElbowVisualizer(KMeans(),k=10)
+Elbow_M.fit(RFMT)
+Elbow_M.show()
+
+references
+https://dev.to/sowmiya_siva_b02c3773f9f5/customer-segmentation-using-rfm-analysis-in-online-retail-2fp3
+https://www.kaggle.com/code/kanishkpanwar/customer-segmentation-using-online-retail-data
+https://www.kaggle.com/code/pragatir/customer-segmentation-rfm-analysis-and-kmeans
+
 
 What I Enhanced:
 📋 Rubric Alignment (140 points total):
